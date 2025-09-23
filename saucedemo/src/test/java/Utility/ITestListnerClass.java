@@ -1,7 +1,6 @@
 package Utility;
 
 import java.io.File;
-
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
@@ -9,7 +8,6 @@ import org.openqa.selenium.WebDriver;
 import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
-
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
@@ -18,105 +16,108 @@ import com.aventstack.extentreports.markuputils.MarkupHelper;
 import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 import com.aventstack.extentreports.reporter.configuration.Theme;
 
-public class ITestListnerClass implements ITestListener{
-	ExtentSparkReporter htmlReporter;
-	ExtentReports reports;
-	ExtentTest test;
-	private WebDriver driver;
-	public void configureReport() {
-		htmlReporter= new ExtentSparkReporter("ExtentListenerReportDemo.html");
-		reports= new ExtentReports();
-		reports.attachReporter(htmlReporter);
-		
-		//add system information/environments info to reports
-		reports.setSystemInfo("Machine", "PC");
-		reports.setSystemInfo("OS","Windows1O");
-		
-		
-		htmlReporter.config().setDocumentTitle("Extent Listener Report Demo");
-		htmlReporter.config().setReportName("This is my first Report");
-		htmlReporter.config().setTheme(Theme.DARK);
-				
-	}
-	
-	@Override
-    public void onTestStart(ITestResult result) {
-        driver = (WebDriver) result.getTestContext().getAttribute("driver");
-        System.out.println("test starting-------");
+public class ITestListnerClass implements ITestListener {
+
+    private ExtentSparkReporter htmlReporter;
+    private ExtentReports reports;
+    private ExtentTest test;
+    private WebDriver driver;  // Make sure WebDriver is properly passed.
+
+    // Configuring the report
+    public void configureReport() {
+        htmlReporter = new ExtentSparkReporter("ExtentListenerReportDemo.html");
+        reports = new ExtentReports();
+        reports.attachReporter(htmlReporter);
+
+        // Add system information/environment info to reports
+        reports.setSystemInfo("Machine", "PC");
+        reports.setSystemInfo("OS", "Windows 10");
+
+        // Customize report details
+        htmlReporter.config().setDocumentTitle("Extent Listener Report Demo");
+        htmlReporter.config().setReportName("This is my first Report");
+        htmlReporter.config().setTheme(Theme.DARK);
     }
 
-	@Override
-	public void onTestSuccess(ITestResult result) {
-		System.out.println("Name of the method: "+result.getName());
-		test=reports.createTest(result.getName());
-		test.log(Status.PASS, MarkupHelper.createLabel("Name of the skip test case is: "+result.getName(),ExtentColor.GREEN));
-	}
-	@Override
-	public void onTestFailure(ITestResult result) {
-		
-	    System.out.println("Name of test method failed: " + result.getName());
-	    
-	    // Create a test entry in the Extent report
-	    ExtentTest test = reports.createTest(result.getName());
-	    test.log(Status.FAIL, MarkupHelper.createLabel("Test case failed: " + result.getName(), ExtentColor.RED));
+    @Override
+    public void onStart(ITestContext context) {
+        configureReport();
+        System.out.println("On start method invoked.....");
+    }
 
-	    // Define the screenshot path
-	    String screenShotPath = System.getProperty("user.dir") + "\\Screenshots\\" + result.getName() + ".png";
-	    System.out.println("Screenshot Path: " + screenShotPath); // Debugging
+    @Override
+    public void onFinish(ITestContext context) {
+        System.out.println("On Finished method invoked.....");
+        reports.flush(); // Make sure to flush the reports to save data
+    }
 
-	    // Create the screenshot file and its parent directories if they don't exist
-	    File screenShotFile = new File(screenShotPath);
-	    File parentDir = new File(screenShotFile.getParent());
-	    
-	    if (!parentDir.exists()) {
-	        parentDir.mkdirs();  // Create directories if they don't exist
-	        System.out.println("Directory created: " + parentDir.getAbsolutePath()); // Debugging
-	    }
+    @Override
+    public void onTestStart(ITestResult result) {
+        // Get WebDriver instance from the test context
+        driver = (WebDriver) result.getTestContext().getAttribute("driver");
+        System.out.println("Test starting: " + result.getName());
+    }
 
-	    
-		// Capture screenshot using Selenium WebDriver
-	    File screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-	    System.out.println("Screenshot captured: " + screenshot.getAbsolutePath()); // Debugging
+    @Override
+    public void onTestSuccess(ITestResult result) {
+        System.out.println("Test passed: " + result.getName());
+        test = reports.createTest(result.getName());
+        test.log(Status.PASS, MarkupHelper.createLabel("Test case passed: " + result.getName(), ExtentColor.GREEN));
+    }
 
-	    try {
-	        // Copy the captured screenshot to the destination
-	        FileUtils.copyFile(screenshot, screenShotFile);
-	        System.out.println("Screenshot saved to: " + screenShotFile.getAbsolutePath()); // Debugging
+    @Override
+    public void onTestFailure(ITestResult result) {
+        System.out.println("Test failed: " + result.getName());
+        
+        // Create a test entry in the Extent report for failed test
+        test = reports.createTest(result.getName());
+        test.log(Status.FAIL, MarkupHelper.createLabel("Test case failed: " + result.getName(), ExtentColor.RED));
 
-	        // Add the screenshot to the Extent report
-	        test.fail("Captured Screenshot is below: " + test.addScreenCaptureFromPath(screenShotPath));
-	    } catch (Exception e) {
-	        // Log error if something goes wrong
-	        test.fail("Screenshot could not be captured: " + e.getMessage());
-	        System.out.println("Error while saving screenshot: " + e.getMessage()); // Debugging
-	    }
-	}
-	@Override
-	public void onTestSkipped(ITestResult result) {
-	    System.out.println("Name of test method skipped "+result.getName());
-	    test=reports.createTest(result.getName());
-	    test.log(Status.SKIP, MarkupHelper.createLabel("Name of the skip test case is: "+result.getName(),ExtentColor.YELLOW));
-	  }
-	@Override
-	public void onTestFailedButWithinSuccessPercentage(ITestResult result) {
-		  
-	  }
+        // Handle screenshot capture when a test fails
+        if (driver != null) {
+            String screenshotPath = System.getProperty("user.dir") + "\\Screenshots\\" + result.getName() + ".png";
+            System.out.println("Screenshot Path: " + screenshotPath);
 
-	@Override
-	  public void onTestFailedWithTimeout(ITestResult result) {
-	    onTestFailure(result);
-	  }
+            File screenShotFile = new File(screenshotPath);
+            File parentDir = new File(screenShotFile.getParent());
 
-	@Override
-	  public void onStart(ITestContext context) {
-	    configureReport();
-	    System.out.println("On start method invoked.....");
-	  }
-	@Override
-	
-	  public void onFinish(ITestContext context) {
-	    System.out.println("On Finished method invoked.....");
-	    reports.flush();// it is mandatory to call flush method to ensure information is written ti the started reporter. 
-	  }
+            if (!parentDir.exists()) {
+                parentDir.mkdirs(); // Create directories if they don't exist
+                System.out.println("Directory created: " + parentDir.getAbsolutePath());
+            }
 
+            try {
+                // Capture the screenshot and save it to the specified location
+                File screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+                FileUtils.copyFile(screenshot, screenShotFile);
+                System.out.println("Screenshot saved to: " + screenShotFile.getAbsolutePath());
+
+                // Add the screenshot to the Extent report
+                test.fail("Captured Screenshot: " + test.addScreenCaptureFromPath(screenshotPath));
+            } catch (Exception e) {
+                // Log error if screenshot capture fails
+                test.fail("Screenshot could not be captured: " + e.getMessage());
+                System.out.println("Error while saving screenshot: " + e.getMessage());
+            }
+        } else {
+            System.out.println("WebDriver instance is null, unable to capture screenshot.");
+        }
+    }
+
+    @Override
+    public void onTestSkipped(ITestResult result) {
+        System.out.println("Test skipped: " + result.getName());
+        test = reports.createTest(result.getName());
+        test.log(Status.SKIP, MarkupHelper.createLabel("Test case skipped: " + result.getName(), ExtentColor.YELLOW));
+    }
+
+    @Override
+    public void onTestFailedButWithinSuccessPercentage(ITestResult result) {
+        // Can be used to handle tests that fail but are within success percentage
+    }
+
+    @Override
+    public void onTestFailedWithTimeout(ITestResult result) {
+        onTestFailure(result); // Same behavior for timeout as failure
+    }
 }
