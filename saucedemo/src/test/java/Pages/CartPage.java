@@ -17,7 +17,7 @@ public class CartPage {
 
 	@FindBy(css = "div.inventory_item:nth-child(1) > div:nth-child(3) > button:nth-child(2)")
 	WebElement element1;
-	@FindBy(css = "div.inventory_item:nth-child(4) > div:nth-child(3) > button:nth-child(2)")
+	@FindBy(css = "div.inventory_item:nth-child(3) > div:nth-child(3) > button:nth-child(2)")
 	WebElement element2;
 	@FindBy(css = "svg[data-icon=\"shopping-cart\"]")
 	WebElement cartbutton;
@@ -27,6 +27,7 @@ public class CartPage {
 	public void addtocart() {
 		element1.click();
 		element2.click();
+		element1.click();
 		cartbutton.click();
 		Actions action = new Actions(driver);
 		action.scrollToElement(checkout);
