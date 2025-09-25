@@ -27,7 +27,7 @@ public class CartTestCase extends BaseTest{
 		CartPage cp=new CartPage(driver);
 		cp.addtocart();
 		lp.logout();
-		Assert.assertTrue(5>10);
+		
 		
 	}
 
