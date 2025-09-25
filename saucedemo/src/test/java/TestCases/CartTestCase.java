@@ -26,6 +26,7 @@ public class CartTestCase extends BaseTest{
 		}
 		CartPage cp=new CartPage(driver);
 		cp.addtocart();
+		System.out.println("hello successfull");;
 		lp.logout();
 		
 		
