@@ -8,6 +8,7 @@
 <test name="test1">
 
 <classes>
+<<<<<<< HEAD
 <class name="TestCases.CartTestCase"></class>
 <!--<class name="TestCases.Logintestcase"></class>-->
 
@@ -16,3 +17,13 @@
 </test> 
 
 </suite>
+=======
+<!--<class name="TestCases.CartTestCase"></class>-->
+<class name="TestCases.Logintestcase"></class>
+
+</classes>
+
+</test> 
+
+</suite>
+>>>>>>> branch 'main' of https://github.com/RohitPachauri2/Automation-project2.git
