@@ -29,6 +29,7 @@ public class CheckoutTestCase extends BaseTest {
 		CheckoutPage cp1=new CheckoutPage(driver);
 		cp1.checkout();
 		Assert.assertTrue(driver.getCurrentUrl().contains("checkout-complete"));
+		System.out.println("new change");
 		lp.logout();
 		
 	}
