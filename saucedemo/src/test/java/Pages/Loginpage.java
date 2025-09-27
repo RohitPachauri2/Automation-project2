@@ -35,7 +35,7 @@ public class Loginpage {
 	    submit.click();
 	    
 	    // Wait for login to complete, could be a better waiting condition based on the app
-	    Thread.sleep(2050);
+	    Thread.sleep(2000);
 	    
 	    // Check if the login is successful by verifying the presence of an element in the home page
 	    try {
