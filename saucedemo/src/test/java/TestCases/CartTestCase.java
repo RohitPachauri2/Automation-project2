@@ -25,7 +25,12 @@ public class CartTestCase extends BaseTest{
 			e.printStackTrace();
 		}
 		CartPage cp=new CartPage(driver);
-		cp.addtocart();
+		try {
+			cp.addtocart();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		;
 		lp.logout();
 		

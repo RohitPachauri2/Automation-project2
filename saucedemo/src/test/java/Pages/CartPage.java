@@ -17,6 +17,7 @@ public class CartPage {
 
 	@FindBy(css = "div.inventory_item:nth-child(1) > div:nth-child(3) > button:nth-child(2)")
 	WebElement element1;
+
 	@FindBy(css = "div.inventory_item:nth-child(3) > div:nth-child(3) > button:nth-child(2)")
 	WebElement element2;
 	@FindBy(css = "svg[data-icon=\"shopping-cart\"]")
@@ -24,7 +25,8 @@ public class CartPage {
 	@FindBy(css = "a.btn_action.checkout_button")
 	WebElement checkout;
 
-	public void addtocart() {
+	public void addtocart() throws InterruptedException {
+		
 		element1.click();
 		element2.click();
 		element1.click();

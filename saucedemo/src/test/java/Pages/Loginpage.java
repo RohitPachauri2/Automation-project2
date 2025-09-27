@@ -3,6 +3,7 @@ package Pages;
 
 import java.time.Duration;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -27,14 +28,28 @@ public class Loginpage {
 	@FindBy(id="login-button") WebElement submit;
 	@FindBy(css="div.bm-burger-button>button") WebElement menu;
 	@FindBy(css="a[id=\"logout_sidebar_link\"]") WebElement logout;
-	public void login(String t_user,String t_pass) throws InterruptedException {
-		username.sendKeys(t_user);
-		pass.sendKeys(t_pass);
-		submit.click();
-		Thread.sleep(5000);
-		
-	}
 	
+	public boolean login(String t_user, String t_pass) throws InterruptedException {
+	    username.sendKeys(t_user);
+	    pass.sendKeys(t_pass);
+	    submit.click();
+	    
+	    // Wait for login to complete, could be a better waiting condition based on the app
+	    Thread.sleep(2000);
+	    
+	    // Check if the login is successful by verifying the presence of an element in the home page
+	    try {
+	        // Add a condition that checks for a successful login, like an element that's present after login.
+	        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+	        wait.until(ExpectedConditions.urlContains("inventory"));
+	        return true;
+	    } catch (Exception e) {
+	    	username.clear();
+	    	pass.clear();
+	        return false;
+	    }
+	}
+
 	public void logout() {
 		
 		menu.click();

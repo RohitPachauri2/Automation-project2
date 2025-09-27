@@ -102,6 +102,7 @@ public class ITestListnerClass implements ITestListener {
         } else {
             System.out.println("WebDriver instance is null, unable to capture screenshot.");
         }
+       
     }
 
     @Override
