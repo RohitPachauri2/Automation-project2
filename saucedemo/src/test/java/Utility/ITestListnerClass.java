@@ -25,7 +25,8 @@ public class ITestListnerClass implements ITestListener {
 
     // Configuring the report
     public void configureReport() {
-        htmlReporter = new ExtentSparkReporter("ExtentListenerReportDemo.html");
+    	htmlReporter = new ExtentSparkReporter(System.getProperty("user.dir") + "/ExtentListenerReportDemo1.html");
+
         reports = new ExtentReports();
         reports.attachReporter(htmlReporter);
 
@@ -75,7 +76,8 @@ public class ITestListnerClass implements ITestListener {
 
         // Handle screenshot capture when a test fails
         if (driver != null) {
-            String screenshotPath = System.getProperty("user.dir") + "\\Screenshots\\" + result.getName() + ".png";
+        	String screenshotPath = System.getProperty("user.dir") + File.separator + "Screenshots" + File.separator + result.getName() + ".png";
+
             System.out.println("Screenshot Path: " + screenshotPath);
 
             File screenShotFile = new File(screenshotPath);
